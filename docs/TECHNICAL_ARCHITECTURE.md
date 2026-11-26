@@ -1,8 +1,22 @@
 # YOSHRUN — Technical Architecture
 **Status:** Proposal only; validate through prototypes before production.
 
+## Platform commitment
+YOSHRUN is a **mobile-only game**. The planned release platforms are Android phones and iPhones (iOS). There is no PC/desktop release target. All gameplay UX, input, graphics budgets and testing priorities must be designed around phones.
+
 ## Engine direction
-Unreal Engine 5 is the current candidate for a high-quality 3D game with animation, AI and multiplayer support. The exact engine release and mobile rendering path must be selected after a device-focused test project.
+Unreal Engine 5 is the current candidate for a high-quality 3D game with animation, AI and multiplayer support. The exact engine release and mobile rendering path must be selected after a device-focused test project. Do not assume high-end desktop rendering features are suitable for phones.
+
+## Phone compatibility strategy
+The goal is broad compatibility, not an unverified promise that every phone can run the game.
+- **Entry-level tier:** reduced resolution/render scale, simpler shadows, lower effects density, conservative texture and memory budgets, reduced view distance and carefully limited active AI.
+- **Mid-range tier:** balanced resolution, effects, shadows and draw distance.
+- **Flagship tier:** higher-quality materials, effects, shadows and resolution where thermals and frame pacing permit.
+- Provide scalable graphics settings and automatic recommended defaults.
+- Test real Android phones across GPU/RAM/OS ranges and real iPhone generations before publishing minimum requirements.
+- Track sustained performance, heat, battery use, loading time, memory pressure and crashes—not just a short benchmark.
+- Keep touch controls responsive across screen sizes, aspect ratios, refresh rates and safe areas.
+- Exact minimum Android/iOS versions and supported device list remain **TBD until prototype testing**.
 
 ## Repository intent
 This repository is the source-control home for design documents and, later, game source and project assets. GitHub is not the game engine and does not by itself build or run the game.
@@ -10,9 +24,9 @@ This repository is the source-control home for design documents and, later, game
 Proposed top-level layout:
 ```
 YOSHRUN/
-├── Config/                 # Unreal configuration (when project is generated)
-├── Content/                # Unreal assets (use Git LFS for large binary assets)
-├── Source/                 # C++ gameplay modules
+├── Config/                 # Engine configuration (when project is generated)
+├── Content/                # Game assets (use Git LFS for large binary assets)
+├── Source/                 # Gameplay source modules
 ├── docs/                   # Design and production documentation
 ├── Build/                  # Build scripts / CI definitions (later)
 ├── .gitignore
@@ -22,8 +36,9 @@ YOSHRUN/
 
 ## Prototype architecture
 ### Player
-- Character movement and camera control.
-- Input abstraction for touch and controller / keyboard testing.
+- Third-person camera by default, with first-person option if performance and design tests support it.
+- Touch-first movement, camera look, interaction and action controls.
+- Input abstraction for touch and optional controller testing.
 - Contextual interaction interface.
 - Health and basic damage handling.
 
@@ -37,7 +52,7 @@ YOSHRUN/
 ### Creature AI
 - Perception: sight and hearing.
 - State machine: Patrol → Investigate → Chase → Attack → Search → Return.
-- Navigation using Unreal navigation systems.
+- Navigation using the engine navigation systems.
 - Configurable movement, detection and attack values.
 - Debug visualization for perception and state transitions.
 
@@ -49,11 +64,11 @@ YOSHRUN/
 - Start with a small player count; 50-player scale is a performance goal requiring load tests.
 
 ## Mobile performance
-- Profile on representative Android and iOS devices from the first greybox.
+- Profile on representative low-, mid- and high-tier Android phones and iPhones from the first greybox.
 - Use scalable quality settings, LODs, instancing, occlusion and efficient materials.
 - Limit dynamic lights, shadow cost, particle overdraw and simultaneous AI.
-- Set frame-rate and memory budgets only after testing real devices.
-- Avoid assuming Nanite / Lumen desktop settings are appropriate for every target phone.
+- Establish per-tier frame-rate, memory, thermal and battery budgets using real devices.
+- Prefer predictable frame pacing and stable play over visual effects that cause overheating or crashes.
 
 ## Backend options
 No backend provider is selected. Evaluate services for authentication, matchmaking, player data, telemetry and dedicated game servers based on pricing, regional latency, platform support, data protection and operational requirements.
@@ -70,9 +85,9 @@ No backend provider is selected. Evaluate services for authentication, matchmaki
 - Plan abuse reporting, chat moderation, privacy controls and account recovery before public multiplayer launch.
 
 ## Immediate technical spike
-1. Install a compatible Unreal Engine version on a capable development machine.
-2. Create a mobile test project and validate Android / iOS toolchains.
-3. Implement one third-person character in a small greybox maze.
+1. Install a compatible engine version and mobile build toolchains.
+2. Create a phone test project and validate Android builds first, then iOS builds.
+3. Implement one touch-controlled third-person character in a small greybox maze.
 4. Add one AI creature with patrol and pursuit states.
 5. Add one key, one gate and one exit.
-6. Profile CPU, GPU, memory and frame pacing on target devices.
+6. Profile CPU, GPU, memory, heat, battery and frame pacing on representative phones from all three device tiers.
