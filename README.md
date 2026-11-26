@@ -4,20 +4,16 @@
 
 YOSHRUN is a third-person / first-person 3D survival-action game set in a vast, shifting stone labyrinth surrounded by hostile wilderness. Players explore, scavenge, solve environmental objectives, evade intelligent creatures, and compete or cooperate to escape.
 
-> **Project status:** Pre-production. This repository currently contains the game's design foundation and technical planning. It is not yet a playable game project.
+> **Project status:** Early implementation. A Godot 4 project foundation and a first procedural gameplay scene are now in the repository. The scene and scripts have not yet been validated in an actual Android build; this is not the completed game.
 
 ## Product vision
 Build a distinctive phone-first survival experience with the ambition of premium multiplayer games, while keeping the core identity focused on the living maze, asymmetric pursuit, and meaningful escape objectives.
 
 ## Target platforms
-- **Mobile phones only:** Android phones and iPhones (iOS).
+- **Mobile phones only:** Android first, then iPhone (iOS).
 - **No PC or desktop release is planned.**
-- The game will be designed for touchscreens and portrait/landscape device handling as decided during UX prototyping; the intended gameplay view is landscape.
-- Aim for broad phone compatibility across entry-level, mid-range and flagship devices through scalable graphics and performance profiles. Exact supported models and minimum OS versions will be determined by real-device testing.
-
-## Planned play options
-- Online multiplayer
-- Offline solo / story experiences where supported by the final design
+- Landscape gameplay and touch-first controls.
+- Broad compatibility across entry-level, mid-range and flagship devices is a goal; supported models and minimum OS versions require real-device testing.
 
 ## Core game modes
 | Mode | Planned format | Core objective |
@@ -29,25 +25,29 @@ Build a distinctive phone-first survival experience with the ambition of premium
 
 Player-summoned creatures are a planned ability/economy feature. Players summon a creature companion; they do not transform into one. Competitive balance, counterplay and fair monetization are mandatory design constraints.
 
-## Repository map
-- `docs/GAME_DESIGN_DOCUMENT.md` — high-level game vision and pillars
-- `docs/GAME_MODES.md` — mode rules and match flow
-- `docs/STORY_AND_WORLDBUILDING.md` — original setting, narrative and chapters
-- `docs/TECHNICAL_ARCHITECTURE.md` — proposed systems and technology direction
-- `docs/ROADMAP.md` — staged production plan and milestones
-- `Config/.gitkeep`, `Source/.gitkeep`, `Content/.gitkeep` — reserved project layout; no engine project has been generated yet
+## Current project files
+- `project.godot` — Godot 4 project configuration, landscape phone orientation and mobile-compatible renderer.
+- `scenes/main.tscn` — game entry scene.
+- `scripts/game_world.gd` — procedural greybox maze, key/gate/exit objective and HUD.
+- `scripts/player_controller.gd` — third-person character and basic touch movement/look.
+- `scripts/maze_hunter.gd` — first-pass pursuing creature.
+- `docs/` — design, story, architecture, device support and production roadmap.
 
-## Proposed technology
-Unreal Engine 5 is the current candidate because of its 3D rendering, animation and multiplayer capabilities. The exact engine release, mobile rendering path and Android/iOS toolchains must be validated with working phone builds before committing to production.
+## Technology
+Godot 4 with the Compatibility renderer is the current implementation choice for a phone-first project. Android is the first build target; iOS follows after the core experience is validated. Rendering quality and minimum device requirements must be established through real phone tests.
 
 ## Development principles
-1. Prototype movement, maze navigation and creature pursuit on phones before expanding scope.
-2. Design for entry-level through flagship phones using scalable quality settings; do not promise support for every model until tested.
+1. Build and test on phones from the beginning.
+2. Design scalable quality settings for low-, mid- and high-tier devices.
 3. Keep multiplayer authoritative and server-validated.
 4. Avoid pay-to-win purchases; paid or earned summons must have clear counters and balanced limits.
-5. Build original characters, creatures, maps, names and story elements. The project may use broad maze-survival genre inspiration, but must not copy protected film/game expression or branding.
+5. Build original characters, creatures, maps, names and story elements.
 
-## Current first milestone
-A small playable phone prototype: one touch-controlled character, one maze test map, one pursuing AI creature, basic health/detection and a simple escape objective.
+## Next engineering milestones
+1. Validate the current project in Godot and produce an Android development build.
+2. Complete player health, damage, creature attack, animations, audio and proper maze navigation.
+3. Build the full single-player story and progression systems.
+4. Implement online sessions, authoritative servers, matchmaking and the two multiplayer modes.
+5. Add the full world, characters, creature roster, cosmetics, economy, accessibility, localization and release QA.
 
-See [the production roadmap](docs/ROADMAP.md) for the next steps.
+A complete commercial game requires substantial implementation, assets, online infrastructure and device testing. The repository status will be reported accurately as those pieces are delivered.
