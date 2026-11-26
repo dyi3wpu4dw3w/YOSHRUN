@@ -5,7 +5,7 @@ const HUNTER_SCRIPT = preload("res://scripts/maze_hunter.gd")
 
 var player: CharacterBody3D
 var hunter: CharacterBody3D
-var status_label: Label
+var status_label: Label\nvar camera_button: Button
 var key_collected := false
 var gate_open := false
 var elapsed := 0.0\nvar game_finished := false
@@ -139,7 +139,7 @@ func _build_hud() -> void:
 	help.add_theme_font_size_override("font_size", 16)
 	root.add_child(help)
 
-func _on_key_body_entered(body: Node3D) -> void:
+func _on_camera_button_pressed() -> void:\n\tif is_instance_valid(player):\n\t\tplayer.toggle_camera_view()\n\t\tcamera_button.text = "CAMERA: 1ST PERSON" if player.first_person else "CAMERA: 3RD PERSON"\n\nfunc _on_key_body_entered(body: Node3D) -> void:
 	if body == player and not key_collected:
 		key_collected = true
 		var key_node := get_node_or_null("MazeKey")
