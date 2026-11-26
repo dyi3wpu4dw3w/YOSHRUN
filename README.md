@@ -27,7 +27,8 @@ Player-summoned creatures are a planned ability/economy feature. Players summon 
 
 ## Current project files
 - `project.godot` — Godot 4 project configuration, landscape phone orientation and mobile-compatible renderer.
-- `scenes/main.tscn` — game entry scene.
+- `scenes/main.tscn` — cinematic mobile lobby entry scene.
+- `scripts/lobby.gd` — runtime-built 3D lobby stage, original placeholder squad, mode selection and touch-friendly navigation.
 - `scripts/game_world.gd` — procedural greybox maze, key/gate/exit objective and HUD.
 - `scripts/player_controller.gd` — third-person character and basic touch movement/look.
 - `scripts/maze_hunter.gd` — first-pass pursuing creature.
@@ -42,6 +43,9 @@ Godot 4 with the Compatibility renderer is the current implementation choice for
 3. Keep multiplayer authoritative and server-validated.
 4. Avoid pay-to-win purchases; paid or earned summons must have clear counters and balanced limits.
 5. Build original characters, creatures, maps, names and story elements.
+
+## Current lobby milestone
+A first interactive lobby foundation is now in the project: a 3D portal stage, four original placeholder hero silhouettes, profile/currency bar, navigation panels, MAZE ROYALE / MAZE CLASH selectors and a Play action. The heroes are procedural placeholders, not final production character models; the lobby has not yet been runtime-validated on Android.
 
 ## Next engineering milestones
 1. Validate the current project in Godot and produce an Android development build.
