@@ -21,6 +21,7 @@ var elapsed := 0.0
 func _ready() -> void:
 	_build_world()
 	_build_maze()
+	_build_world_details()
 	_spawn_player()
 	_spawn_hunter()
 	_build_hud()
@@ -112,6 +113,65 @@ func _build_maze() -> void:
 	exit_area.add_child(exit_collision)
 	exit_area.body_entered.connect(_on_exit_body_entered)
 	add_child(exit_area)
+
+
+func _build_world_details() -> void:
+	# Ruined settlement around the labyrinth: huts, watchtowers, trees and warm lanterns.
+	var wood := Color(0.20, 0.105, 0.055)
+	var plaster := Color(0.43, 0.39, 0.30)
+	var roof := Color(0.12, 0.16, 0.17)
+	for p in [Vector3(-23, 0, -18), Vector3(23, 0, -18), Vector3(-23, 0, 18), Vector3(23, 0, 18)]:
+		_build_house(p, wood, plaster, roof)
+	for p in [Vector3(-20, 0, 0), Vector3(20, 0, 0), Vector3(0, 0, -22), Vector3(0, 0, 22)]:
+		_build_watchtower(p)
+	for p in [Vector3(-19, 0, -10), Vector3(19, 0, -10), Vector3(-19, 0, 10), Vector3(19, 0, 10), Vector3(-25, 0, 8), Vector3(25, 0, -8)]:
+		_build_tree(p)
+	for x in range(-15, 16, 6):
+		for z in range(-15, 16, 6):
+			if (abs(x) + abs(z)) % 12 == 0:
+				_build_lantern(Vector3(float(x), 0, float(z)))
+
+func _build_house(p: Vector3, wood: Color, plaster: Color, roof: Color) -> void:
+	var base := _block(p + Vector3(0, 1.25, 0), Vector3(5.2, 2.5, 4.6), plaster)
+	base.name = "RuinedHouse"
+	_block(p + Vector3(0, 2.8, 0), Vector3(5.8, 0.45, 5.2), roof)
+	_block(p + Vector3(0, 3.35, 0), Vector3(5.0, 0.55, 0.45), wood)
+	_block(p + Vector3(-1.45, 1.7, -2.36), Vector3(0.75, 1.1, 0.12), Color(0.035, 0.045, 0.05))
+	_block(p + Vector3(1.5, 1.7, -2.36), Vector3(0.75, 1.1, 0.12), Color(0.035, 0.045, 0.05))
+	_block(p + Vector3(0, 0.8, 2.38), Vector3(1.0, 1.6, 0.16), wood)
+
+func _build_watchtower(p: Vector3) -> void:
+	_block(p + Vector3(0, 2.2, 0), Vector3(1.0, 4.4, 1.0), Color(0.28, 0.29, 0.27))
+	_block(p + Vector3(0, 4.5, 0), Vector3(3.2, 0.35, 3.2), Color(0.16, 0.13, 0.10))
+	_block(p + Vector3(0, 5.1, 0), Vector3(2.8, 0.9, 2.8), Color(0.22, 0.19, 0.14))
+
+func _build_tree(p: Vector3) -> void:
+	var trunk := MeshInstance3D.new()
+	var trunk_mesh := CylinderMesh.new()
+	trunk_mesh.top_radius = 0.18
+	trunk_mesh.bottom_radius = 0.32
+	trunk_mesh.height = 2.5
+	trunk.mesh = trunk_mesh
+	trunk.position = p + Vector3(0, 1.25, 0)
+	trunk.material_override = _material(Color(0.19, 0.105, 0.055))
+	add_child(trunk)
+	var crown := MeshInstance3D.new()
+	var crown_mesh := SphereMesh.new()
+	crown_mesh.radius = 1.25
+	crown_mesh.height = 2.2
+	crown.mesh = crown_mesh
+	crown.position = p + Vector3(0, 3.0, 0)
+	crown.material_override = _material(Color(0.09, 0.20, 0.13))
+	add_child(crown)
+
+func _build_lantern(p: Vector3) -> void:
+	_block(p + Vector3(0, 1.0, 0), Vector3(0.12, 2.0, 0.12), Color(0.12, 0.10, 0.08))
+	var lamp := OmniLight3D.new()
+	lamp.position = p + Vector3(0, 2.0, 0)
+	lamp.light_color = Color(1.0, 0.57, 0.19)
+	lamp.light_energy = 0.65
+	lamp.omni_range = 4.5
+	add_child(lamp)
 
 func _spawn_player() -> void:
 	player = CharacterBody3D.new()
