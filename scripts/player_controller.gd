@@ -20,7 +20,7 @@ var move_vector := Vector2.ZERO
 var yaw := 0.0
 var pitch := -0.18
 var damage_lock := 0.0
-var dead := false
+var dead := false\nvar first_person := false
 
 func _ready() -> void:
 	health = max_health
@@ -57,7 +57,7 @@ func _make_camera() -> void:
 	camera.current = true
 	camera_pivot.add_child(camera)
 
-func _input(event: InputEvent) -> void:
+func toggle_camera_view() -> void:\n\tfirst_person = not first_person\n\tif first_person:\n\t\tcamera.position = Vector3(0, 0.12, 0.12)\n\t\tcamera.fov = 82.0\n\telse:\n\t\tcamera.position = Vector3(0, 1.0, 4.8)\n\t\tcamera.fov = 75.0\n\nfunc _input(event: InputEvent) -> void:
 	if dead:
 		return
 	if event is InputEventScreenTouch:
