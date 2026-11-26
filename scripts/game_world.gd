@@ -8,7 +8,7 @@ var hunter: CharacterBody3D
 var status_label: Label
 var key_collected := false
 var gate_open := false
-var elapsed := 0.0
+var elapsed := 0.0\nvar game_finished := false
 
 func _ready() -> void:
 	_build_world()
