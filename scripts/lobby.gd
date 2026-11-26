@@ -225,5 +225,4 @@ func _open_tab(tab_name: String) -> void:
 	mode_label.text = "YOSHRUN HUB"
 
 func _on_play_pressed() -> void:
-	info_label.text = "MATCH PREPARATION"
-	mode_label.text = selected_mode + "  •  SOLO"
+	get_tree().change_scene_to_file("res://scenes/maze.tscn")
