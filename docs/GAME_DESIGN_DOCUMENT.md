@@ -91,7 +91,7 @@ Use spatial audio to communicate creature proximity, gate movement, footsteps an
 The first prototype is deliberately narrow: one character, one greybox maze, one AI pursuer, one key / gate interaction and one exit. Multiplayer, 50-player scale, monetization and cinematic story production come after the core loop is fun and technically stable.
 
 ## 15. Open decisions
-- Exact Unreal Engine version and mobile rendering configuration.
+- Exact Godot 4.x version and mobile rendering configuration.
 - Minimum supported Android / iOS hardware.
 - Final match duration, player counts and revive rules.
 - Whether first-person is available in all modes.
