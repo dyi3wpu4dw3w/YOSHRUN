@@ -200,7 +200,7 @@ func _build_interface() -> void:
 	_panel(ui, Rect2(12, 100, 190, 480))
 	var nav := ["CHARACTERS", "STORE", "WEAPONS", "INVENTORY", "SUMMONS", "MISSIONS", "EVENTS"]
 	for i in range(nav.size()):
-		var item := nav[i]
+		var item: String = nav[i]
 		_button(ui, item, Rect2(22, 112 + i * 62, 170, 48), func(): _open_tab(item))
 	_panel(ui, Rect2(1030, 96, 238, 212))
 	_label(ui, "SELECT GAME MODE", Vector2(1044, 104), Vector2(210, 32), 17, GOLD)
