@@ -38,3 +38,10 @@ Last updated: 2026-11-26
 
 ## Honesty rule
 A GitHub commit is not a playable APK. The current repository contains an early playable-intent prototype and source files, not a finished commercial game. Mark a feature complete only after implementation, automated checks where possible, and device/gameplay testing.
+
+
+## 2026-11-26 — Cinematic mobile lobby foundation
+- Added `scripts/lobby.gd` with a runtime-built 3D portal stage, lighting, original procedural hero placeholders (RAYAN, LINA, KADIR, NOUR), player/currency header, navigation, mode selection and Play action.
+- Switched `scenes/main.tscn` to launch the lobby.
+- This is an interactive greybox lobby foundation. Hero meshes are temporary primitives; no final character art, rigging, animation, backend, matchmaking, store transactions or real currency balances are implemented.
+- Android export and runtime validation are still required. Do not describe this milestone as a finished global game.
