@@ -15,7 +15,7 @@ The game's signature is the tension between **the maze as an active environment*
 - Create a recognizable visual identity built around monumental stone architecture, overgrown wilderness, shifting mechanisms and dangerous creatures.
 - Scale visual quality to real Android and iOS hardware rather than assuming high-end PCs.
 
-## 3. Design pillars
+## Character visual direction\nUse original stylized semi-realistic 3D heroes with expressive faces, layered tactical / survival clothing, premium material definition and strong readable silhouettes. The desired polish is comparable to leading mobile action games, but all YOSHRUN character designs, costumes, faces, logos and animations must be original. See [CHARACTER_ART_DIRECTION.md](CHARACTER_ART_DIRECTION.md) for the provisional roster and production pipeline.\n\n## 3. Design pillars
 1. **The maze is alive:** gates, route states, hazards and environmental events reshape player decisions.
 2. **Escape is earned:** players gather clues, keys and resources to open routes; the exit is an objective, not a free reward.
 3. **Threats are readable:** creatures telegraph intent and provide learnable counterplay.
