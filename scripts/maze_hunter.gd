@@ -12,24 +12,66 @@ var visual: MeshInstance3D
 var attack_cooldown := 0.0
 
 func _ready() -> void:
-	var mesh := CapsuleMesh.new()
-	mesh.radius = 0.62
-	mesh.height = 2.2
-	visual = MeshInstance3D.new()
-	visual.mesh = mesh
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.32, 0.08, 0.07)
-	mat.roughness = 0.8
-	visual.material_override = mat
-	visual.position.y = 1.1
-	add_child(visual)
+	# The WARDEN: a towering original maze creature with layered armor and glowing eyes.
+	var hide_mat := _mat(Color(0.075, 0.035, 0.045))
+	var plate_mat := _mat(Color(0.22, 0.075, 0.055), 0.28)
+	var glow_mat := _mat(Color(1.0, 0.12, 0.035), 0.1, true)
+	_add_capsule(Vector3(0, 1.15, 0), 0.58, 2.1, hide_mat)
+	_add_sphere(Vector3(0, 2.25, -0.05), 0.48, hide_mat)
+	_add_box(Vector3(0, 1.55, -0.48), Vector3(0.95, 0.75, 0.16), plate_mat)
+	for side in [-1.0, 1.0]:
+		_add_capsule(Vector3(side * 0.72, 1.45, 0), 0.22, 1.5, plate_mat, Vector3(0, 0, side * -0.22))
+		_add_capsule(Vector3(side * 0.30, 0.45, 0), 0.25, 0.95, hide_mat)
+		_add_sphere(Vector3(side * 0.19, 2.30, -0.46), 0.075, glow_mat)
+		_add_capsule(Vector3(side * 0.27, 2.76, 0.0), 0.10, 0.8, plate_mat, Vector3(0, 0, side * -0.48))
 	var collision := CollisionShape3D.new()
 	var shape := CapsuleShape3D.new()
 	shape.radius = 0.62
-	shape.height = 2.2
+	shape.height = 2.7
 	collision.shape = shape
-	collision.position.y = 1.1
+	collision.position.y = 1.35
 	add_child(collision)
+
+func _mat(color: Color, metallic := 0.0, glow := false) -> StandardMaterial3D:
+	var m := StandardMaterial3D.new()
+	m.albedo_color = color
+	m.metallic = metallic
+	m.roughness = 0.55
+	if glow:
+		m.emission_enabled = true
+		m.emission = color
+		m.emission_energy_multiplier = 2.8
+	return m
+
+func _add_capsule(pos: Vector3, radius: float, height: float, mat: Material, rot := Vector3.ZERO) -> void:
+	var mesh := CapsuleMesh.new()
+	mesh.radius = radius
+	mesh.height = height
+	var node := MeshInstance3D.new()
+	node.mesh = mesh
+	node.position = pos
+	node.rotation = rot
+	node.material_override = mat
+	add_child(node)
+
+func _add_sphere(pos: Vector3, radius: float, mat: Material) -> void:
+	var mesh := SphereMesh.new()
+	mesh.radius = radius
+	mesh.height = radius * 2.0
+	var node := MeshInstance3D.new()
+	node.mesh = mesh
+	node.position = pos
+	node.material_override = mat
+	add_child(node)
+
+func _add_box(pos: Vector3, size: Vector3, mat: Material) -> void:
+	var mesh := BoxMesh.new()
+	mesh.size = size
+	var node := MeshInstance3D.new()
+	node.mesh = mesh
+	node.position = pos
+	node.material_override = mat
+	add_child(node)
 
 func _physics_process(delta: float) -> void:
 	attack_cooldown = maxf(0.0, attack_cooldown - delta)
