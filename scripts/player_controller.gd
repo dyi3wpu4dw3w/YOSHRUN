@@ -6,13 +6,11 @@ signal player_died
 @export var move_speed := 5.2
 @export var look_sensitivity := 0.004
 @export var max_health := 100
-@export var interaction_range := 2.4
 
 var health := 100
 var gravity := 18.0
 var camera_pivot: Node3D
 var camera: Camera3D
-var visual: MeshInstance3D
 var move_touch_id := -1
 var look_touch_id := -1
 var move_origin := Vector2.ZERO
@@ -20,7 +18,8 @@ var move_vector := Vector2.ZERO
 var yaw := 0.0
 var pitch := -0.18
 var damage_lock := 0.0
-var dead := false\nvar first_person := false
+var dead := false
+var first_person := false
 
 func _ready() -> void:
 	health = max_health
@@ -32,11 +31,11 @@ func _make_player() -> void:
 	var capsule := CapsuleMesh.new()
 	capsule.radius = 0.38
 	capsule.height = 1.7
-	visual = MeshInstance3D.new()
+	var visual := MeshInstance3D.new()
 	visual.mesh = capsule
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.18, 0.48, 0.62)
-	visual.material_override = mat
+	var material := StandardMaterial3D.new()
+	material.albedo_color = Color(0.18, 0.48, 0.62)
+	visual.material_override = material
 	visual.position.y = 0.85
 	add_child(visual)
 	var collision := CollisionShape3D.new()
@@ -54,11 +53,21 @@ func _make_camera() -> void:
 	camera = Camera3D.new()
 	camera.position = Vector3(0, 1.0, 4.8)
 	camera.rotation.x = -0.12
+	camera.fov = 75.0
 	camera.current = true
 	camera_pivot.add_child(camera)
 
-func toggle_camera_view() -> void:\n\tfirst_person = not first_person\n\tif first_person:\n\t\tcamera.position = Vector3(0, 0.12, 0.12)\n\t\tcamera.fov = 82.0\n\telse:\n\t\tcamera.position = Vector3(0, 1.0, 4.8)\n\t\tcamera.fov = 75.0\n\nfunc _input(event: InputEvent) -> void:
-	if dead:
+func toggle_camera_view() -> void:
+	first_person = not first_person
+	if first_person:
+		camera.position = Vector3(0, 0.12, 0.12)
+		camera.fov = 82.0
+	else:
+		camera.position = Vector3(0, 1.0, 4.8)
+		camera.fov = 75.0
+
+func _input(event: InputEvent) -> void:
+	if dead or get_tree().paused:
 		return
 	if event is InputEventScreenTouch:
 		if event.pressed:
@@ -83,23 +92,25 @@ func toggle_camera_view() -> void:\n\tfirst_person = not first_person\n\tif firs
 			camera.rotation.x = pitch
 
 func _physics_process(delta: float) -> void:
+	if get_tree().paused:
+		return
 	damage_lock = maxf(0.0, damage_lock - delta)
 	if dead:
 		velocity = Vector3.ZERO
 		return
-	var input_vec := move_vector
-	if input_vec.length() < 0.05:
-		input_vec = Vector2(
+	var input_vector := move_vector
+	if input_vector.length() < 0.05:
+		input_vector = Vector2(
 			Input.get_action_strength("move_right") - Input.get_action_strength("move_left"),
 			Input.get_action_strength("move_back") - Input.get_action_strength("move_forward")
 		)
-	var direction := (camera_pivot.global_transform.basis * Vector3(input_vec.x, 0, input_vec.y)).normalized()
+	var direction := (camera_pivot.global_transform.basis * Vector3(input_vector.x, 0, input_vector.y)).normalized()
 	velocity.x = direction.x * move_speed
 	velocity.z = direction.z * move_speed
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	else:
-		velocity.y = 0
+		velocity.y = 0.0
 	move_and_slide()
 
 func take_damage(amount: int) -> void:
