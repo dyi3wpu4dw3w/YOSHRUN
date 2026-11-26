@@ -6,6 +6,7 @@ const HUNTER_SCRIPT = preload("res://scripts/maze_hunter.gd")
 var player: CharacterBody3D
 var hunter: CharacterBody3D
 var gate: StaticBody3D
+var gate_collision: CollisionShape3D
 var key_node: Area3D
 var status_label: Label
 var health_label: Label
@@ -101,6 +102,7 @@ func _build_maze() -> void:
 
 	gate = _block(Vector3(0, 1.8, -15), Vector3(4, 3.6, 0.6), Color(0.12, 0.07, 0.04))
 	gate.name = "ExitGate"
+	gate_collision = gate.get_node_or_null("CollisionShape3D")
 	var exit_area := Area3D.new()
 	exit_area.position = Vector3(0, 0.5, -16.5)
 	var exit_collision := CollisionShape3D.new()
@@ -223,8 +225,22 @@ func _on_key_body_entered(body: Node3D) -> void:
 		return
 	key_collected = true
 	key_node.queue_free()
-	gate.queue_free()
-	status_label.text = "KEY FOUND  |  THE EXIT IS OPEN — RUN!"
+	_open_exit_gate()
+	status_label.text = "KEY FOUND  |  EXIT GATE UNLOCKED — RUN!"
+
+func _open_exit_gate() -> void:
+	if not is_instance_valid(gate):
+		return
+	if is_instance_valid(gate_collision):
+		gate_collision.set_deferred("disabled", true)
+	var tween := create_tween()
+	tween.set_trans(Tween.TRANS_CUBIC)
+	tween.set_ease(Tween.EASE_OUT)
+	tween.tween_property(gate, "position:y", gate.position.y + 4.2, 1.1)
+	tween.tween_callback(func() -> void:
+		if is_instance_valid(gate):
+			gate.visible = false
+	)
 
 func _on_exit_body_entered(body: Node3D) -> void:
 	if body == player and key_collected and not game_finished:
