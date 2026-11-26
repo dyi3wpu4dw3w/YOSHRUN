@@ -1,7 +1,14 @@
 extends CharacterBody3D
 
+signal health_changed(current: int, maximum: int)
+signal player_died
+
 @export var move_speed := 5.2
 @export var look_sensitivity := 0.004
+@export var max_health := 100
+@export var interaction_range := 2.4
+
+var health := 100
 var gravity := 18.0
 var camera_pivot: Node3D
 var camera: Camera3D
@@ -12,10 +19,14 @@ var move_origin := Vector2.ZERO
 var move_vector := Vector2.ZERO
 var yaw := 0.0
 var pitch := -0.18
+var damage_lock := 0.0
+var dead := false
 
 func _ready() -> void:
+	health = max_health
 	_make_player()
 	_make_camera()
+	health_changed.emit(health, max_health)
 
 func _make_player() -> void:
 	var capsule := CapsuleMesh.new()
@@ -47,6 +58,8 @@ func _make_camera() -> void:
 	camera_pivot.add_child(camera)
 
 func _input(event: InputEvent) -> void:
+	if dead:
+		return
 	if event is InputEventScreenTouch:
 		if event.pressed:
 			if event.position.x < get_viewport().get_visible_rect().size.x * 0.48 and move_touch_id == -1:
@@ -70,6 +83,10 @@ func _input(event: InputEvent) -> void:
 			camera.rotation.x = pitch
 
 func _physics_process(delta: float) -> void:
+	damage_lock = maxf(0.0, damage_lock - delta)
+	if dead:
+		velocity = Vector3.ZERO
+		return
 	var input_vec := move_vector
 	if input_vec.length() < 0.05:
 		input_vec = Vector2(
@@ -84,3 +101,19 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.y = 0
 	move_and_slide()
+
+func take_damage(amount: int) -> void:
+	if dead or damage_lock > 0.0:
+		return
+	health = maxi(0, health - amount)
+	damage_lock = 0.65
+	health_changed.emit(health, max_health)
+	if health <= 0:
+		dead = true
+		player_died.emit()
+
+func heal(amount: int) -> void:
+	if dead:
+		return
+	health = mini(max_health, health + amount)
+	health_changed.emit(health, max_health)
