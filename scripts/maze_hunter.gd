@@ -3,6 +3,9 @@ extends CharacterBody3D
 @export var move_speed := 2.8
 @export var detection_range := 18.0
 @export var attack_range := 1.5
+@export var attack_damage := 18
+@export var attack_interval := 1.4
+
 var target: Node3D
 var gravity := 18.0
 var visual: MeshInstance3D
@@ -48,7 +51,8 @@ func _physics_process(delta: float) -> void:
 		velocity.y -= gravity * delta
 	else:
 		velocity.y = 0
-	if distance <= attack_range and attack_cooldown <= 0:
-		attack_cooldown = 1.4
-		# Placeholder damage event; player health is added in the next gameplay systems pass.
+	if distance <= attack_range and attack_cooldown <= 0.0:
+		attack_cooldown = attack_interval
+		if target.has_method("take_damage"):
+			target.take_damage(attack_damage)
 	move_and_slide()
