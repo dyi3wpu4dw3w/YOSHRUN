@@ -28,23 +28,63 @@ func _ready() -> void:
 	health_changed.emit(health, max_health)
 
 func _make_player() -> void:
-	var capsule := CapsuleMesh.new()
-	capsule.radius = 0.38
-	capsule.height = 1.7
-	var visual := MeshInstance3D.new()
-	visual.mesh = capsule
-	var material := StandardMaterial3D.new()
-	material.albedo_color = Color(0.18, 0.48, 0.62)
-	visual.material_override = material
-	visual.position.y = 0.85
-	add_child(visual)
+	# Original RAYAN-inspired survival outfit assembled from optimized low-poly meshes.
+	var outfit := _make_material(Color(0.045, 0.20, 0.27))
+	var armor := _make_material(Color(0.10, 0.48, 0.58), 0.35)
+	var skin := _make_material(Color(0.48, 0.31, 0.22))
+	var dark := _make_material(Color(0.035, 0.045, 0.055))
+	_add_capsule_visual(Vector3(0, 0.94, 0), 0.39, 1.25, outfit)
+	_add_sphere_visual(Vector3(0, 1.78, 0), 0.29, skin)
+	_add_box_visual(Vector3(0, 1.20, -0.30), Vector3(0.48, 0.52, 0.12), armor)
+	for side in [-1.0, 1.0]:
+		_add_capsule_visual(Vector3(side * 0.48, 1.03, 0), 0.14, 0.82, outfit, Vector3(0, 0, side * -0.12))
+		_add_capsule_visual(Vector3(side * 0.19, 0.34, 0), 0.17, 0.72, dark)
+		_add_box_visual(Vector3(side * 0.19, 0.08, -0.06), Vector3(0.34, 0.16, 0.48), dark)
+	_add_box_visual(Vector3(0, 1.55, -0.27), Vector3(0.52, 0.12, 0.12), armor)
 	var collision := CollisionShape3D.new()
 	var shape := CapsuleShape3D.new()
 	shape.radius = 0.38
-	shape.height = 1.7
+	shape.height = 1.85
 	collision.shape = shape
-	collision.position.y = 0.85
+	collision.position.y = 0.93
 	add_child(collision)
+
+func _make_material(color: Color, metallic := 0.0) -> StandardMaterial3D:
+	var m := StandardMaterial3D.new()
+	m.albedo_color = color
+	m.metallic = metallic
+	m.roughness = 0.58
+	return m
+
+func _add_capsule_visual(pos: Vector3, radius: float, height: float, mat: Material, rot := Vector3.ZERO) -> void:
+	var mesh := CapsuleMesh.new()
+	mesh.radius = radius
+	mesh.height = height
+	var node := MeshInstance3D.new()
+	node.mesh = mesh
+	node.position = pos
+	node.rotation = rot
+	node.material_override = mat
+	add_child(node)
+
+func _add_sphere_visual(pos: Vector3, radius: float, mat: Material) -> void:
+	var mesh := SphereMesh.new()
+	mesh.radius = radius
+	mesh.height = radius * 2.0
+	var node := MeshInstance3D.new()
+	node.mesh = mesh
+	node.position = pos
+	node.material_override = mat
+	add_child(node)
+
+func _add_box_visual(pos: Vector3, size: Vector3, mat: Material) -> void:
+	var mesh := BoxMesh.new()
+	mesh.size = size
+	var node := MeshInstance3D.new()
+	node.mesh = mesh
+	node.position = pos
+	node.material_override = mat
+	add_child(node)
 
 func _make_camera() -> void:
 	camera_pivot = Node3D.new()
